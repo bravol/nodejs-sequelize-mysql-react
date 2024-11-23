@@ -1,15 +1,9 @@
-import { useEffect, useState } from "react";
 import { Blog } from "../types";
+interface Props {
+  blogs: Blog[];
+}
 
-const Blogs = () => {
-  const [blogs, setBlogs] = useState<Blog[]>([]);
-
-  useEffect(() => {
-    const storedBlogs: Blog[] = JSON.parse(
-      localStorage.getItem("blogs") || "[]"
-    );
-    setBlogs(storedBlogs);
-  }, []);
+const Blogs = ({ blogs }: Props) => {
   return (
     <div>
       <h1>Blogs</h1>

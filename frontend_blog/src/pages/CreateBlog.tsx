@@ -1,12 +1,16 @@
 import React, { useState } from "react";
 import { Blog } from "../types";
+import { createBlog } from "../service/api";
 
 const CreateBlog = () => {
-  const [formData, setFormData] = useState<Blog>({
-    date: "",
+  const [formData, setFormData] = useState<
+    Omit<Blog, "id" | "createdAt" | "updatedAt">
+  >({
     title: "",
     content: "",
+    date: "",
   });
+
   //   submit function
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -15,16 +19,15 @@ const CreateBlog = () => {
     setFormData({ ...(formData as Blog), [name]: value });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // localstorage
     try {
-      const existingBlogs = JSON.parse(localStorage.getItem("blogs") || "[]");
       const blog = { ...formData, date: Date.now().toString() };
-      const updatedBlogs = [...existingBlogs, blog];
-      localStorage.setItem("blogs", JSON.stringify(updatedBlogs));
-      setFormData({ date: "", title: "", content: "" });
-      alert("Blog added successfully!");
+      const response = await createBlog(blog);
+      if (response) {
+        setFormData({ date: "", title: "", content: "" });
+        alert("Blog added successfully!");
+      }
     } catch (error) {
       console.log(error);
     }
